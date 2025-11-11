@@ -15,6 +15,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '.azurewebsites.net',  # Permite todos los subdominios de Azure
+    '169.254.130.3',  # IP interna de Azure para health checks
 ]
 
 # Si existe WEBSITE_HOSTNAME (variable de Azure), agregarlo específicamente

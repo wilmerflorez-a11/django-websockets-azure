@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Documento - Editor Colaborativo ClaudeNova</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e27;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated background with particles */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(124, 58, 237, 0.4);
+            border-radius: 50%;
+            animation: float-particle linear infinite;
+        }
+
+        @keyframes float-particle {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Gradient orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.5;
+            animation: move-orb 20s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, #667eea, transparent);
+            top: -200px;
+            right: -200px;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, #764ba2, transparent);
+            bottom: -250px;
+            left: -250px;
+            animation-delay: 5s;
+        }
+
+        .orb-3 {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, #f093fb, transparent);
+            top: 50%;
+            left: 50%;
+            animation-delay: 10s;
+        }
+
+        @keyframes move-orb {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            25% {
+                transform: translate(50px, 50px) scale(1.1);
+            }
+            50% {
+                transform: translate(-30px, 80px) scale(0.9);
+            }
+            75% {
+                transform: translate(80px, -50px) scale(1.05);
+            }
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(30px);
+            border-radius: 30px;
+            padding: 50px 45px;
+            width: 100%;
+            max-width: 650px;
+            box-shadow: 0 30px 100px rgba(0, 0, 0, 0.6),
+                        0 0 0 1px rgba(255, 255, 255, 0.1),
+                        inset 0 0 50px rgba(255, 255, 255, 0.02);
+            animation: fadeInScale 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 40px;
+            font-size: 2.2em;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .title-icon {
+            font-size: 1.2em;
+            display: inline-block;
+            animation: float-icon 3s ease-in-out infinite;
+            filter: drop-shadow(0 5px 15px rgba(118, 75, 162, 0.3));
+        }
+
+        @keyframes float-icon {
+            0%, 100% { 
+                transform: translateY(0px) rotate(-5deg); 
+            }
+            50% { 
+                transform: translateY(-10px) rotate(5deg); 
+            }
+        }
+
+        .form-group {
+            margin-bottom: 28px;
+        }
+
+        label {
+            display: block;
+            color: #1e293b;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 0.95em;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-icon {
+            font-size: 1.1em;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            font-size: 1em;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #f8fafc;
+            color: #1e293b;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #764ba2;
+            background: white;
+            box-shadow: 0 0 0 5px rgba(118, 75, 162, 0.1),
+                        0 8px 20px rgba(118, 75, 162, 0.15);
+            transform: translateY(-2px);
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: #94a3b8;
+        }
+
+        textarea {
+            min-height: 220px;
+            resize: vertical;
+            line-height: 1.6;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Custom scrollbar for textarea */
+        textarea::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        textarea::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+        }
+
+        textarea::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
+        textarea::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #764ba2, #f093fb);
+            background-clip: padding-box;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 35px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px 28px;
+            border: none;
+            border-radius: 14px;
+            font-size: 1.05em;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-size: 200% 100%;
+            color: white;
+            box-shadow: 0 10px 30px rgba(118, 75, 162, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 50px rgba(118, 75, 162, 0.5);
+            background-position: 100% 0;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary.loading {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .btn-primary.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            right: 25px;
+            margin-top: -10px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            color: #334155;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .char-counter {
+            text-align: right;
+            color: #64748b;
+            font-size: 0.85em;
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        .quick-tips {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-left: 4px solid #0ea5e9;
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-top: 25px;
+            font-size: 0.9em;
+            color: #0369a1;
+            font-weight: 500;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .quick-tips::before {
+            content: '💡';
+            font-size: 1.3em;
+            flex-shrink: 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 640px) {
+            .form-container {
+                padding: 35px 30px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            textarea {
+                min-height: 180px;
+            }
+        }
+
+        /* Accessibility */
+        input:focus-visible,
+        textarea:focus-visible,
+        .btn:focus-visible {
+            outline: 3px solid #764ba2;
+            outline-offset: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <div class="form-container">
+        <h1>
+            <span class="title-icon">📝</span>
+            Crear Nuevo Documento
+        </h1>
+        
+        <form method="POST" action="{% url 'crear_documento' %}" id="createForm">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="titulo">
+                    <span class="input-icon">✏️</span>
+                    Título del documento
+                </label>
+                <input 
+                    type="text" 
+                    id="titulo" 
+                    name="titulo" 
+                    placeholder="Ej: Mi Proyecto 2025" 
+                    required 
+                    autofocus
+                    maxlength="200"
+                    autocomplete="off">
+                <div class="char-counter" id="titleCounter">0 / 200 caracteres</div>
+            </div>
+
+            <div class="form-group">
+                <label for="contenido">
+                    <span class="input-icon">📄</span>
+                    Contenido inicial (opcional)
+                </label>
+                <textarea 
+                    id="contenido" 
+                    name="contenido" 
+                    placeholder="Escribe el contenido inicial o déjalo en blanco..."></textarea>
+            </div>
+
+            <div class="quick-tips">
+                <div>
+                    <strong>Consejo:</strong> Puedes dejar el contenido en blanco y empezar a escribir directamente en el editor colaborativo.
+                </div>
+            </div>
+
+            <div class="button-group">
+                <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary" id="submitBtn">Crear Documento</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const bgAnimation = document.querySelector('.bg-animation');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 5 + 2;
+                const startPosition = Math.random() * 100;
+                const duration = Math.random() * 10 + 15;
+                const delay = Math.random() * 5;
+                
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = startPosition + '%';
+                particle.style.animationDuration = duration + 's';
+                particle.style.animationDelay = delay + 's';
+                
+                bgAnimation.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
+        // Character counter for title
+        const titleInput = document.getElementById('titulo');
+        const titleCounter = document.getElementById('titleCounter');
+
+        titleInput.addEventListener('input', function() {
+            const length = this.value.length;
+            titleCounter.textContent = `${length} / 200 caracteres`;
+            
+            if (length > 180) {
+                titleCounter.style.color = '#ef4444';
+            } else if (length > 150) {
+                titleCounter.style.color = '#f59e0b';
+            } else {
+                titleCounter.style.color = '#64748b';
+            }
+        });
+
+        // Form submission with loading state
+        document.getElementById('createForm').addEventListener('submit', function(e) {
+            const btn = document.getElementById('submitBtn');
+            btn.classList.add('loading');
+            btn.textContent = 'Creando documento...';
+        });
+
+        // Input animations
+        const inputs = document.querySelectorAll('input, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateY(-2px)';
+                this.parentElement.style.transition = 'transform 0.3s ease';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Auto-resize textarea
+        const textarea = document.getElementById('contenido');
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.max(220, this.scrollHeight) + 'px';
+        });
+    </script>
+</body>
+</html>

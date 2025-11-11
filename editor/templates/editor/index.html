@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor Colaborativo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        .documentos-lista {
+            list-style: none;
+        }
+        .documento-item {
+            background: #f8f9fa;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border-left: 4px solid #667eea;
+        }
+        .documento-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .documento-item a {
+            color: #333;
+            text-decoration: none;
+            display: block;
+        }
+        .documento-titulo {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #667eea;
+        }
+        .documento-info {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .empty-state-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .admin-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: background 0.3s ease;
+        }
+        .admin-link:hover {
+            background: #764ba2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📝 Editor Colaborativo</h1>
+        
+        <div class="card">
+            {% if documentos %}
+                <h2 style="margin-bottom: 20px; color: #333;">Documentos disponibles</h2>
+                <ul class="documentos-lista">
+                    {% for doc in documentos %}
+                        <li class="documento-item">
+                            <a href="{% url 'documento' doc.id %}">
+                                <div class="documento-titulo">{{ doc.titulo }}</div>
+                                <div class="documento-info">
+                                    Última actualización: {{ doc.actualizado|date:"d/m/Y H:i" }}
+                                </div>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">📄</div>
+                    <h2>No hay documentos disponibles</h2>
+                    <p>Crea tu primer documento desde el panel de administración</p>
+                    <a href="/admin/" class="admin-link">Ir al panel de admin</a>
+                </div>
+            {% endif %}
+            
+            {% if documentos %}
+                <div style="text-align: center;">
+                    <a href="/admin/" class="admin-link">Gestionar documentos</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

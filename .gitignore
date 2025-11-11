@@ -1,0 +1,42 @@
+# Python
+*.py[cod]
+*$py.class
+*.so
+__pycache__/
+*.pyc
+venv/
+env/
+ENV/
+.Python
+
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+/staticfiles/
+/media/
+
+# Variables de entorno
+.env
+.env.local
+.env.*.local
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Azure
+.azure/
+
+# Archivos de prueba
+*.coverage
+.pytest_cache/
+htmlcov/
+
+# Archivos temporales
+*.bak
+*.tmp

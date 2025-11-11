@@ -10,13 +10,21 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-desarrollo-key-cambia
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
+# Helper class para permitir health checks de Azure
+class AzureAllowedHosts:
+    """Permite health checks internos de Azure (169.254.x.x)"""
+    def __contains__(self, host):
+        # Extraer IP del host (puede incluir puerto)
+        ip = host.split(':')[0] if ':' in host else host
+        # Permitir todas las IPs 169.254.x.x de Azure
+        return ip.startswith('169.254.')
+
 # Configurar ALLOWED_HOSTS para Azure
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
     ".azurewebsites.net",
-    "169.254.130.2",  # Health check interno de Azure
-    "169.254.129.1",  # Otra IP común de Azure
+    AzureAllowedHosts(),  # Permitir health checks de Azure
 ]
 
 # Agregar hostname de Azure si existe
@@ -131,7 +139,7 @@ LOGOUT_REDIRECT_URL = 'login'
 
 # Configuración de seguridad para producción
 if not DEBUG:
-    # Forzar HTTPS solo si no es health check interno
+    # Forzar HTTPS
     SECURE_SSL_REDIRECT = True
     
     # Cookies seguras

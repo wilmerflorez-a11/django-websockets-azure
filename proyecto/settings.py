@@ -19,9 +19,13 @@ ALLOWED_HOSTS = [
     '*',
 ]
 
-# Si existe WEBSITE_HOSTNAME (variable de Azure), agregarlo específicamente
+# CSRF para Azure
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.azurewebsites.net',
+]
+
 if 'WEBSITE_HOSTNAME' in os.environ:
-    ALLOWED_HOSTS.append(os.environ['WEBSITE_HOSTNAME'])
+    CSRF_TRUSTED_ORIGINS.append(f"https://{os.environ['WEBSITE_HOSTNAME']}")
 
 # Application definition
 INSTALLED_APPS = [

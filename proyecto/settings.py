@@ -10,23 +10,27 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-desarrollo-key-cambia
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-# Configurar ALLOWED_HOSTS
+# Configurar ALLOWED_HOSTS para Azure
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
     ".azurewebsites.net",
+    "169.254.130.2",  # Health check interno de Azure
+    "169.254.129.1",  # Otra IP común de Azure
 ]
 
-
-CSRF_TRUSTED_ORIGINS = [
-    f"https://{os.environ.get('WEBSITE_HOSTNAME')}",
-    "https://*.azurewebsites.net"
-]
-
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
+# Agregar hostname de Azure si existe
 if 'WEBSITE_HOSTNAME' in os.environ:
     ALLOWED_HOSTS.append(os.environ['WEBSITE_HOSTNAME'])
+
+# CSRF Trusted Origins para Azure
+CSRF_TRUSTED_ORIGINS = []
+if 'WEBSITE_HOSTNAME' in os.environ:
+    CSRF_TRUSTED_ORIGINS.append(f"https://{os.environ['WEBSITE_HOSTNAME']}")
+    CSRF_TRUSTED_ORIGINS.append("https://*.azurewebsites.net")
+
+# Configuración de proxy para Azure
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Application definition
 INSTALLED_APPS = [
@@ -127,7 +131,7 @@ LOGOUT_REDIRECT_URL = 'login'
 
 # Configuración de seguridad para producción
 if not DEBUG:
-    # Forzar HTTPS
+    # Forzar HTTPS solo si no es health check interno
     SECURE_SSL_REDIRECT = True
     
     # Cookies seguras
@@ -177,5 +181,3 @@ LOGGING = {
         },
     },
 }
-
-

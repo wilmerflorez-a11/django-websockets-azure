@@ -12,20 +12,21 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # Configurar ALLOWED_HOSTS
 ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '.azurewebsites.net',  # Permite todos los subdominios de Azure
-    '169.254.130.3',  # IP interna de Azure para health checks
-    '*',
+    "localhost",
+    "127.0.0.1",
+    ".azurewebsites.net",
 ]
 
-# CSRF para Azure
+
 CSRF_TRUSTED_ORIGINS = [
-    'https://*.azurewebsites.net',
+    f"https://{os.environ.get('WEBSITE_HOSTNAME')}",
+    "https://*.azurewebsites.net"
 ]
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 if 'WEBSITE_HOSTNAME' in os.environ:
-    CSRF_TRUSTED_ORIGINS.append(f"https://{os.environ['WEBSITE_HOSTNAME']}")
+    ALLOWED_HOSTS.append(os.environ['WEBSITE_HOSTNAME'])
 
 # Application definition
 INSTALLED_APPS = [

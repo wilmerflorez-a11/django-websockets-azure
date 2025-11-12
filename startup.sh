@@ -1,21 +1,33 @@
 #!/bin/bash
+set -e
 
 echo "🚀 Iniciando aplicación Django con WebSockets en Azure..."
+echo "📍 Directorio actual: $(pwd)"
+echo "🐍 Python: $(python --version)"
+
+# Verificar si existe manage.py
+if [ ! -f "manage.py" ]; then
+    echo "❌ ERROR: manage.py no encontrado"
+    exit 1
+fi
 
 # Colectar archivos estáticos
 echo "📦 Recolectando archivos estáticos..."
-python manage.py collectstatic --noinput
+python manage.py collectstatic --noinput --clear || echo "⚠️ Warning: collectstatic falló"
 
 # Ejecutar migraciones
 echo "🔄 Ejecutando migraciones de base de datos..."
-python manage.py migrate --noinput
+python manage.py migrate --noinput || {
+    echo "❌ ERROR: Migraciones fallaron"
+    exit 1
+}
 
-# Crear superusuario si no existe (opcional - comentar si no lo necesitas)
-# echo "👤 Verificando superusuario..."
-# python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.filter(username='admin').exists() or User.objects.create_superuser('admin', 'admin@example.com', 'cambiar_password')"
+# Verificar migraciones
+echo "✅ Verificando tablas de base de datos..."
+python manage.py showmigrations
 
-echo "✅ Configuración completada"
-echo "🌐 Iniciando servidor Daphne..."
+echo "✅ Configuración completada exitosamente"
+echo "🌐 Iniciando servidor Daphne en puerto 8000..."
 
 # Iniciar Daphne en el puerto 8000
-daphne -b 0.0.0.0 -p 8000 proyecto.asgi:application
+exec daphne -b 0.0.0.0 -p 8000 proyecto.asgi:application
